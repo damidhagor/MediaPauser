@@ -160,7 +160,7 @@ internal sealed class TimerService : Service, ITimerService
 
         return new Notification.Builder(this, NotificationChannelId)
              .SetOngoing(true)
-             .SetSmallIcon(_Microsoft.Android.Resource.Designer.ResourceConstant.Drawable.dotnet_bot)
+             .SetSmallIcon(Resource.Mipmap.appicon_foreground)
              .SetContentTitle(title)
              .SetContentText(text)
              .AddAction(stopServiceAction)
