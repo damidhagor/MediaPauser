@@ -26,6 +26,10 @@ public static class MauiProgram
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddSingleton<IMessenger, WeakReferenceMessenger>();
+
+        builder.Services.AddSingleton(Preferences.Default);
+        builder.Services.AddTransient<ISettingsService, SettingsService>();
+
         builder.Services.AddSingleton<TimerServiceConnection>();
         builder.Services.AddTransient<ITimerServiceAccessor, TimerServiceAccessor>();
 

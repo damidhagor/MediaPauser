@@ -3,16 +3,16 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace MediaPauser.ViewModels;
 
-internal sealed partial class MainViewModel(IMessenger messenger, ITimerServiceAccessor timerServiceAccessor)
-    : ObservableRecipient(messenger),
+internal sealed partial class MainViewModel : ObservableRecipient,
     IRecipient<TimerStarted>,
     IRecipient<TimerStopped>,
     IRecipient<TimerTicked>
 {
-    private readonly ITimerServiceAccessor _timerServiceAccessor = timerServiceAccessor;
+    private readonly ISettingsService _settingsService;
+    private readonly ITimerServiceAccessor _timerServiceAccessor;
 
     [ObservableProperty]
-    private TimeSpan _duration = TimeSpan.Zero;
+    private TimeSpan _duration;
 
     [ObservableProperty]
     private bool _timerIsRunning;
@@ -29,6 +29,13 @@ internal sealed partial class MainViewModel(IMessenger messenger, ITimerServiceA
 
     public int RemainingSeconds => RemainingTime.Seconds;
 
+    public MainViewModel(IMessenger messenger, ISettingsService settingsService, ITimerServiceAccessor timerServiceAccessor)
+        : base(messenger)
+    {
+        _settingsService = settingsService;
+        _timerServiceAccessor = timerServiceAccessor;
+        Duration = _settingsService.GetLastUsedTimerDuration();
+    }
 
     [RelayCommand]
     private void Activate()
@@ -52,6 +59,7 @@ internal sealed partial class MainViewModel(IMessenger messenger, ITimerServiceA
 
     public void Receive(TimerStarted message)
     {
+        _settingsService.StoreLastUsedTimerDuration(message.Duration);
         Duration = message.Duration;
         RemainingTime = message.Duration;
         TimerIsRunning = true;
