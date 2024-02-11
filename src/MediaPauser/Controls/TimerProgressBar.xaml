@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<GraphicsView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+              xmlns:local="clr-namespace:MediaPauser.Controls"
+              x:Class="MediaPauser.Controls.TimerProgressBar" x:ClassModifier="internal"
+              x:Name="Control" x:DataType="local:TimerProgressBar">
+    
+    <GraphicsView.Drawable>
+        <local:TimerProgressBarDrawable Duration="{Binding Duration, Source={x:Reference Control}}"
+                                        RemainingTime="{Binding RemainingTime, Source={x:Reference Control}}"
+                                        Stroke="{Binding Stroke, Source={x:Reference Control}}"
+                                        StrokeSize="{Binding StrokeSize, Source={x:Reference Control}}"
+                                        StrokeLineCap="{Binding StrokeLineCap, Source={x:Reference Control}}" />
+    </GraphicsView.Drawable>
+</GraphicsView>

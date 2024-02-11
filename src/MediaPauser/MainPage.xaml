@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:viewModels="clr-namespace:MediaPauser.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:controls="clr-namespace:MediaPauser.Controls"
+             x:Class="MediaPauser.MainPage" x:ClassModifier="internal"
+             x:DataType="viewModels:MainViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="Appearing" Command="{Binding ActivateCommand}"/>
+        <toolkit:EventToCommandBehavior EventName="Disappearing" Command="{Binding DeactivateCommand}"/>
+    </ContentPage.Behaviors>
+
+    <Grid>
+
+        <VerticalStackLayout Grid.Row="0" Grid.Column="0"
+                             Spacing="20"
+                             HorizontalOptions="Center" VerticalOptions="Center"
+                             IsVisible="{Binding TimerIsRunning, Converter={StaticResource InvertedBoolConv}}">
+
+            <controls:TimeSelector Value="{Binding Duration}"/>
+
+            <controls:FAButton Style="{StaticResource StartButton}"
+                               Command="{Binding StartTimerCommand}"
+                               HorizontalOptions="Fill" />
+
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="0" Grid.Column="0"
+              IsVisible="{Binding TimerIsRunning}">
+
+            <controls:TimerProgressBar Duration="{Binding Duration}"
+                                       RemainingTime="{Binding RemainingTime}" />
+
+            <VerticalStackLayout Spacing="20" Padding="1" HorizontalOptions="Center" VerticalOptions="Center">
+                <Label Text="{Binding RemainingTime}"
+                       Style="{StaticResource StepperLabelPrimary}">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{Binding RemainingHours, StringFormat='{0:00}'}" />
+                            <Span Text=":" />
+                            <Span Text="{Binding RemainingMinutes, StringFormat='{0:00}'}" />
+                            <Span Text=":" />
+                            <Span Text="{Binding RemainingSeconds, StringFormat='{0:00}'}" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                
+                <controls:FAButton Style="{StaticResource StopButton}"
+                                   Command="{Binding StopTimerCommand}"
+                                   HorizontalOptions="Fill" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>

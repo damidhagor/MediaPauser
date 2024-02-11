@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:MediaPauser.Controls">
+
+    <Style x:Key="LabelBaseStyle" TargetType="Label">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextColorLight}, Dark={StaticResource TextColorDark}}" />
+        <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
+    </Style>
+
+    <Style x:Key="StepperLabelPrimary" TargetType="Label" BasedOn="{StaticResource LabelBaseStyle}">
+        <Setter Property="FontSize" Value="{StaticResource StepperPrimaryLabelFontSize}" />
+    </Style>
+
+    <Style x:Key="StepperLabelSecondary" TargetType="Label" BasedOn="{StaticResource LabelBaseStyle}">
+        <Setter Property="FontSize" Value="{StaticResource StepperSecondaryLabelFontSize}" />
+    </Style>
+
+    <Style TargetType="Label" BasedOn="{StaticResource LabelBaseStyle}" />
+
+</ResourceDictionary>

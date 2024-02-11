@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:system="clr-namespace:System;assembly=System.Memory">
+
+    <x:String x:Key="FA-Chevron-Up">&#xF077;</x:String>
+    <x:String x:Key="FA-Chevron-Down">&#xF078;</x:String>
+    <x:String x:Key="FA-Play">&#xF04B;</x:String>
+    <x:String x:Key="FA-Stop">&#xF04D;</x:String>
+    
+</ResourceDictionary>

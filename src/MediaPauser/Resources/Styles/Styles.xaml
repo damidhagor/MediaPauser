@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:MediaPauser.Controls">
+    
+    <Style x:Key="ContentPageBaseStyle" TargetType="ContentPage" ApplyToDerivedTypes="True">
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="Background" Value="{AppThemeBinding Light={StaticResource PageBackgroundColorLight}, Dark={StaticResource PageBackgroundColorDark}}" />
+    </Style>
+    
+    <Style TargetType="controls:TimerProgressBar">
+        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource AccentColor}, Dark={StaticResource AccentColorDark}}" />
+        <Setter Property="StrokeSize" Value="{StaticResource TimerProgressBarStroke}" />
+        <Setter Property="StrokeLineCap" Value="Round" />
+    </Style>
+
+    <Style TargetType="ContentPage" BasedOn="{StaticResource ContentPageBaseStyle}" ApplyToDerivedTypes="True" />
+
+</ResourceDictionary>

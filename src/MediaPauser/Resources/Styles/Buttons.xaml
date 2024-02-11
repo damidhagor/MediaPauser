@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:MediaPauser.Controls">
+
+    <Style x:Key="ButtonBaseStyle" TargetType="Button">
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}"/>
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonTextColorLight}, Dark={StaticResource ButtonTextColorDark}}" />
+        <Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonBackgroundColorLight}, Dark={StaticResource ButtonBackgroundColorDark}}" />
+        <Setter Property="FontSize" Value="{StaticResource NormalFontSize}" />
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="14,10"/>
+    </Style>
+
+    <Style x:Key="FAButtonBaseStyle" TargetType="controls:FAButton" BasedOn="{StaticResource ButtonBaseStyle}">
+        <Setter Property="GlyphColor" Value="{AppThemeBinding Light={StaticResource AccentColor}, Dark={StaticResource AccentColorDark}}" />
+        <Setter Property="GlyphFontFamily" Value="FontAwesomeSolid" />
+    </Style>
+
+    <Style x:Key="MainButton" TargetType="controls:FAButton" BasedOn="{StaticResource FAButtonBaseStyle}">
+        <Setter Property="GlyphFontSize" Value="{StaticResource MainButtonGlyphFontSize}" />
+        <Setter Property="FontSize" Value="{StaticResource MainButtonFontSize}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonTextColorDark}, Dark={StaticResource ButtonTextColorLight}}" />
+        <Setter Property="BorderWidth" Value="2" />
+        <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource AccentColor}, Dark={StaticResource AccentColorDark}}" />
+    </Style>
+
+    <Style x:Key="StartButton" TargetType="controls:FAButton" BasedOn="{StaticResource MainButton}">
+        <Setter Property="Glyph" Value="{StaticResource FA-Play}" />
+        <Setter Property="Text" Value="Start Timer" />
+    </Style>
+
+    <Style x:Key="StopButton" TargetType="controls:FAButton" BasedOn="{StaticResource MainButton}">
+        <Setter Property="Glyph" Value="{StaticResource FA-Stop}" />
+        <Setter Property="Text" Value="Stop Timer" />
+    </Style>
+
+    <Style x:Key="StepperButton" TargetType="controls:FAButton" BasedOn="{StaticResource FAButtonBaseStyle}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="GlyphFontSize" Value="{StaticResource StepperButtonGlyphFontSize}" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <Style x:Key="StepperButtonUp" TargetType="controls:FAButton" BasedOn="{StaticResource StepperButton}">
+        <Setter Property="Glyph" Value="{StaticResource FA-Chevron-Up}" />
+    </Style>
+
+    <Style x:Key="StepperButtonDown" TargetType="controls:FAButton" BasedOn="{StaticResource StepperButton}">
+        <Setter Property="Glyph" Value="{StaticResource FA-Chevron-Down}" />
+    </Style>
+
+    <Style TargetType="controls:FAButton" BasedOn="{StaticResource FAButtonBaseStyle}" />
+    <Style TargetType="Button" BasedOn="{StaticResource ButtonBaseStyle}" />
+</ResourceDictionary>
