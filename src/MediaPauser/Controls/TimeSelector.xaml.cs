@@ -57,11 +57,15 @@ internal partial class TimeSelector
         Value = newValue > TimeSpan.Zero ? newValue : TimeSpan.Zero;
     }
 
-    private void IncreaseMinutes_Clicked(object sender, EventArgs e) => Value += MinutesStep;
+    private void IncreaseMinutes_Clicked(object sender, EventArgs e)
+    {
+        Value += TimeSpan.FromMinutes(5 - (Value.Minutes % 5));
+    }
 
     private void DecreaseMinutes_Clicked(object sender, EventArgs e)
     {
-        var newValue = Value - MinutesStep;
+        var minutesToSubtract = Value.Minutes % 5 == 0 ? 5 : Value.Minutes % 5;
+        var newValue = Value - TimeSpan.FromMinutes(minutesToSubtract);
         Value = newValue > TimeSpan.Zero ? newValue : TimeSpan.Zero;
     }
 
