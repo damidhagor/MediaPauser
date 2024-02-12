@@ -3,7 +3,8 @@
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:MediaPauser.Controls">
+    xmlns:controls="clr-namespace:MediaPauser.Controls"
+    xmlns:resources="clr-namespace:MediaPauser.Resources">
 
     <Style x:Key="ButtonBaseStyle" TargetType="Button">
         <Setter Property="FontFamily" Value="{StaticResource DefaultFont}"/>
@@ -26,16 +27,17 @@
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonTextColorDark}, Dark={StaticResource ButtonTextColorLight}}" />
         <Setter Property="BorderWidth" Value="2" />
         <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource AccentColor}, Dark={StaticResource AccentColorDark}}" />
+        <Setter Property="Padding" Value="20,10" />
     </Style>
 
     <Style x:Key="StartButton" TargetType="controls:FAButton" BasedOn="{StaticResource MainButton}">
         <Setter Property="Glyph" Value="{StaticResource FA-Play}" />
-        <Setter Property="Text" Value="Start Timer" />
+        <Setter Property="Text" Value="{x:Static resources:AppResources.StartTimer}" />
     </Style>
 
     <Style x:Key="StopButton" TargetType="controls:FAButton" BasedOn="{StaticResource MainButton}">
         <Setter Property="Glyph" Value="{StaticResource FA-Stop}" />
-        <Setter Property="Text" Value="Stop Timer" />
+        <Setter Property="Text" Value="{x:Static resources:AppResources.StopTimer}" />
     </Style>
 
     <Style x:Key="StepperButton" TargetType="controls:FAButton" BasedOn="{StaticResource FAButtonBaseStyle}">

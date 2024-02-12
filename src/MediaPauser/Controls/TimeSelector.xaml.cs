@@ -1,3 +1,5 @@
+using static MediaPauser.Resources.AppResources;
+
 namespace MediaPauser.Controls;
 
 internal partial class TimeSelector
@@ -71,7 +73,7 @@ internal partial class TimeSelector
             return;
         }
 
-        var input = await mainPage.DisplayPromptAsync("", "", "Ok", "Abbrechen", "Bitte Stunden eingeben", 2, Keyboard.Numeric);
+        var input = await mainPage.DisplayPromptAsync("", "", Ok, Cancel, EnterHoursMessage, 2, Keyboard.Numeric);
         if (int.TryParse(input, out var hours))
         {
             Value = new(hours, Value.Minutes, 0);
@@ -86,7 +88,7 @@ internal partial class TimeSelector
             return;
         }
 
-        var input = await mainPage.DisplayPromptAsync("", "", "Ok", "Abbrechen", "Bitte Minuten eingeben", 2, Keyboard.Numeric);
+        var input = await mainPage.DisplayPromptAsync("", "", Ok, Cancel, EnterMinutesMessage, 2, Keyboard.Numeric);
         if (int.TryParse(input, out var minutes))
         {
             Value = new((int)Value.TotalHours, minutes, 0);

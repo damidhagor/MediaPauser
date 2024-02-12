@@ -25,7 +25,7 @@
 
             <controls:FAButton Style="{StaticResource StartButton}"
                                Command="{Binding StartTimerCommand}"
-                               HorizontalOptions="Fill" />
+                               HorizontalOptions="Center" />
 
         </VerticalStackLayout>
 
@@ -35,7 +35,8 @@
             <controls:TimerProgressBar Duration="{Binding Duration}"
                                        RemainingTime="{Binding RemainingTime}" />
 
-            <VerticalStackLayout Spacing="20" Padding="1" HorizontalOptions="Center" VerticalOptions="Center">
+            <VerticalStackLayout Spacing="20" Padding="1"
+                                 HorizontalOptions="Center" VerticalOptions="Center">
                 <Label Text="{Binding RemainingTime}"
                        Style="{StaticResource StepperLabelPrimary}">
                     <Label.FormattedText>
@@ -48,10 +49,10 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                
+
                 <controls:FAButton Style="{StaticResource StopButton}"
                                    Command="{Binding StopTimerCommand}"
-                                   HorizontalOptions="Fill" />
+                                   HorizontalOptions="Center" />
             </VerticalStackLayout>
         </Grid>
     </Grid>

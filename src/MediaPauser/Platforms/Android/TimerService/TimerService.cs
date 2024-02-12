@@ -5,6 +5,7 @@ using Android.Media;
 using Android.OS;
 using Android.Views;
 using static MediaPauser.Platforms.Android.TimerService.Constants;
+using static MediaPauser.Resources.AppResources;
 
 namespace MediaPauser.Platforms.Android.TimerService;
 
@@ -158,7 +159,7 @@ internal sealed class TimerService : Service, ITimerService
         var showMainActivityIntent = BuildShowMainActivityIntent();
         var stopServiceAction = BuildStopServiceAction();
 
-        var title = _timer.Enabled ? "Verbleibende Zeit" : "";
+        var title = _timer.Enabled ? NotificationTitle : "";
         var text = _timer.Enabled
             ? $"{(int)remainingTime.TotalHours:00}:{remainingTime.Minutes:00}:{remainingTime.Seconds:00}"
             : "";
@@ -188,7 +189,7 @@ internal sealed class TimerService : Service, ITimerService
 
         var pendingIntent = PendingIntent.GetService(this, 0, intent, PendingIntentFlags.Immutable);
 
-        return new Notification.Action.Builder(null, "Stop Timer", pendingIntent).Build();
+        return new Notification.Action.Builder(null, NotificationStopAction, pendingIntent).Build();
     }
 
     private void CreateNotificationChannel()
