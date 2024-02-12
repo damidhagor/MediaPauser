@@ -1,29 +1,16 @@
-﻿using System.Timers;
-using Android.Content;
+﻿using Android.Content;
 using Android.OS;
 using MediaPauser.Platforms.Android.TimerService;
 
 namespace MediaPauser.Platforms.Android.Services;
 
-internal sealed class TimerServiceConnection : Java.Lang.Object, IServiceConnection
+internal sealed class TimerServiceConnection(IMessenger messenger)
+    : Java.Lang.Object, IServiceConnection
 {
-    private readonly IMessenger _messenger;
-    private readonly TimeProvider _timeProvider;
-    private readonly Timer _statusTimer;
+    private readonly IMessenger _messenger = messenger;
     private TimerServiceBinder? _binder;
 
-    public bool IsConnected => Service is not null;
-
     public ITimerService? Service => _binder?.TimerService;
-
-    public TimerServiceConnection(IMessenger messenger, TimeProvider timeProvider)
-    {
-        _messenger = messenger;
-        _timeProvider = timeProvider;
-
-        _statusTimer = new(TimeSpan.FromSeconds(1));
-        _statusTimer.Elapsed += OnStatusTimerElapsed;
-    }
 
     public void OnServiceConnected(ComponentName? name, IBinder? service)
     {
@@ -35,76 +22,49 @@ internal sealed class TimerServiceConnection : Java.Lang.Object, IServiceConnect
             Service.TimerStarted += OnTimerStarted;
             Service.TimerStopped -= OnTimerStopped;
             Service.TimerStopped += OnTimerStopped;
+            Service.TimerTicked -= OnTimerTicked;
+            Service.TimerTicked += OnTimerTicked;
 
             var status = Service.GetTimerStatus();
             if (status.IsRunning)
             {
-                StartStatusTimer();
-                BroadcastTimerStatus();
+                BroadcastTimerStarted(status.StartTime!.Value, status.Duration!.Value);
             }
         }
     }
 
-    public void OnServiceDisconnected(ComponentName? name)
-    {
-        StopStatusTimer();
-        _binder = null;
-    }
+    public void OnServiceDisconnected(ComponentName? name) => _binder = null;
 
     protected override void Dispose(bool disposing)
     {
-        _statusTimer.Elapsed -= OnStatusTimerElapsed;
-        _statusTimer.Stop();
-        _statusTimer.Dispose();
-
         if (Service is not null)
         {
             Service.TimerStarted -= OnTimerStarted;
             Service.TimerStopped -= OnTimerStopped;
+            Service.TimerTicked -= OnTimerTicked;
         }
 
         base.Dispose(disposing);
     }
 
-    private void OnTimerStarted(object? sender, EventArgs e) => StartStatusTimer();
+    private void OnTimerStarted(object? sender, TimerStartedEventArgs e) => BroadcastTimerStarted(e.StartTime, e.Duration);
 
-    private void OnTimerStopped(object? sender, EventArgs e) => StopStatusTimer();
+    private void OnTimerTicked(object? sender, TimerTickedEventArgs e) => BroadcastTimerTicked(e.StartTime, e.Duration, e.RemainingTime);
 
-    private void OnStatusTimerElapsed(object? sender, ElapsedEventArgs e) => BroadcastTimerStatus();
+    private void OnTimerStopped(object? sender, EventArgs e) => BroadcastTimerStopped();
 
-    private void StartStatusTimer()
+    private void BroadcastTimerStarted(DateTimeOffset startTime, TimeSpan duration)
     {
-        _statusTimer.Start();
-        var status = _binder?.TimerService?.GetTimerStatus();
-
-        if (status is not null
-            && status.StartTime is not null
-            && status.Duration is not null)
-        {
-            _messenger.Send(new TimerStarted(status.StartTime.Value, status.Duration.Value));
-        }
+        _messenger.Send(new TimerStarted(startTime, duration));
     }
 
-    private void StopStatusTimer()
+    private void BroadcastTimerStopped()
     {
-        _statusTimer.Stop();
         _messenger.Send<TimerStopped>();
     }
 
-    private void BroadcastTimerStatus()
+    private void BroadcastTimerTicked(DateTimeOffset startTime, TimeSpan duration, TimeSpan remaining)
     {
-        var status = _binder?.TimerService?.GetTimerStatus();
-
-        if (status is not null
-            && status.StartTime is not null
-            && status.Duration is not null)
-        {
-            var started = status.StartTime.Value;
-            var duration = status.Duration.Value;
-            var elapsed = _timeProvider.GetUtcNow() - started;
-            var remaining = duration - elapsed;
-
-            _messenger.Send(new TimerTicked(started, duration, remaining));
-        }
+        _messenger.Send(new TimerTicked(startTime, duration, remaining));
     }
 }

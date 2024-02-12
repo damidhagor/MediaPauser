@@ -20,7 +20,7 @@ internal sealed class TimerService : Service, ITimerService
     private TimeSpan _timerDuration;
 
     public event EventHandler<TimerStartedEventArgs> TimerStarted = null!;
-
+    public event EventHandler<TimerTickedEventArgs> TimerTicked = null!;
     public event EventHandler TimerStopped = null!;
 
     public TimerService()
@@ -88,7 +88,7 @@ internal sealed class TimerService : Service, ITimerService
         }
 
         _timerDuration = duration;
-        _timerStartTime = _timeProvider.GetUtcNow();
+        _timerStartTime = _timeProvider.GetUtcNow().TruncateMilliseconds();
 
         StartForegroundService();
 
@@ -105,7 +105,8 @@ internal sealed class TimerService : Service, ITimerService
 
     private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
     {
-        var elapsedTime = _timeProvider.GetUtcNow() - _timerStartTime;
+        var signalTime = e.SignalTime.TruncateMilliseconds();
+        var elapsedTime = signalTime - _timerStartTime;
         var remainingTime = _timerDuration - elapsedTime;
 
         if (_notificationManager is not null)
@@ -114,7 +115,11 @@ internal sealed class TimerService : Service, ITimerService
             _notificationManager.Notify(NotificationId, notification);
         }
 
-        if (remainingTime <= TimeSpan.Zero)
+        if (remainingTime > TimeSpan.Zero)
+        {
+            TimerTicked?.Invoke(this, new(_timerStartTime, _timerDuration, remainingTime));
+        }
+        else
         {
             StopTimer();
             PauseMediaPlayback();
