@@ -4,23 +4,53 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  publish-android:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: ./src/MediaPauser
 
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+
+    - name: Load keystore
+      run: echo ${{ secrets.KEYSTORE }} | base64 -di > mediapauser.keystore
       
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-mediapauser-${{ hashFiles('**/**.csproj') }}
+        restore-keys: |
+            ${{ runner.os }}-nuget-mediapauser-
+        save-always: true
+
     - name: Setup dotnet
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 8.x
 
     - name: Install workloads
-      run: dotnet workload install maui
-        
-    - name: Restore dependencies
+      run: dotnet workload install maui-android
+
+    - name: Dotnet restore
       run: dotnet restore
+
+    - name: Publish
+      run: >
+          dotnet publish -c Release -f net8.0-android
+          -p:AndroidPackageFormats=apk
+          -p:AndroidKeyStore=true
+          -p:AndroidSigningKeyStore=mediapauser.keystore
+          -p:AndroidSigningKeyAlias=mediapauser
+          -p:AndroidSigningKeyPass=${{ secrets.KEYSTORE_PASSWORD }}
+          -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_PASSWORD }}
+          -o ./publish
+          --no-restore
       
-    - name: Build
-      run: dotnet build src\MediaPauser\MediaPauser.csproj -c Release -f net8.0-android --no-restore
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: mediapauser-app.zip
+        path: ./src/MediaPauser/publish/**.apk
