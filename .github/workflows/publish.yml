@@ -52,5 +52,5 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: mediapauser-app.zip
+        name: mediapauser-app
         path: ./src/MediaPauser/publish/**.apk
