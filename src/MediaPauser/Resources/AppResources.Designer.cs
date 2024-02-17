@@ -115,6 +115,15 @@ namespace MediaPauser.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to + 5 Minutes.
+        /// </summary>
+        internal static string NotificationIncrementTimerAction {
+            get {
+                return ResourceManager.GetString("NotificationIncrementTimerAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stop timer.
         /// </summary>
         internal static string NotificationStopAction {

@@ -135,6 +135,9 @@
   <data name="Minutes" xml:space="preserve">
     <value>Minuten</value>
   </data>
+  <data name="NotificationIncrementTimerAction" xml:space="preserve">
+    <value>+ 5 Minuten</value>
+  </data>
   <data name="NotificationStopAction" xml:space="preserve">
     <value>Timer stoppen</value>
   </data>

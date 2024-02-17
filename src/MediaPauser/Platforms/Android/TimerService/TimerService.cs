@@ -67,6 +67,13 @@ internal sealed class TimerService : Service, ITimerService
             StopTimer();
             return StartCommandResult.Sticky;
         }
+        else if (intent?.Action == IncrementTimerAction
+            && intent.HasExtra(TimerIncrementExtraName))
+        {
+            var increment = intent.GetLongExtra(TimerIncrementExtraName, 0);
+            IncrementTimer(TimeSpan.FromTicks(increment));
+            return StartCommandResult.Sticky;
+        }
 
         StopSelf(startId);
         return StartCommandResult.Sticky;
@@ -161,6 +168,7 @@ internal sealed class TimerService : Service, ITimerService
     {
         var showMainActivityIntent = BuildShowMainActivityIntent();
         var stopServiceAction = BuildStopServiceAction();
+        var incrementTimerAction = BuildIncrementTimerAction();
 
         var text = $"{(int)_timerStatus.RemainingTime.TotalHours:00}:{_timerStatus.RemainingTime.Minutes:00}:{_timerStatus.RemainingTime.Seconds:00}";
 
@@ -171,6 +179,7 @@ internal sealed class TimerService : Service, ITimerService
              .SetContentTitle(NotificationTitle)
              .SetContentText(text)
              .AddAction(stopServiceAction)
+             .AddAction(incrementTimerAction)
              .SetContentIntent(showMainActivityIntent)
              .Build();
     }
@@ -191,6 +200,17 @@ internal sealed class TimerService : Service, ITimerService
         var pendingIntent = PendingIntent.GetService(this, 0, intent, PendingIntentFlags.Immutable);
 
         return new Notification.Action.Builder(null, NotificationStopAction, pendingIntent).Build();
+    }
+
+    private Notification.Action BuildIncrementTimerAction()
+    {
+        var intent = new Intent(this, typeof(TimerService));
+        intent.SetAction(IncrementTimerAction);
+        intent.PutExtra(TimerIncrementExtraName, TimeSpan.FromMinutes(5).Ticks);
+
+        var pendingIntent = PendingIntent.GetService(this, 0, intent, PendingIntentFlags.Immutable);
+
+        return new Notification.Action.Builder(null, NotificationIncrementTimerAction, pendingIntent).Build();
     }
 
     private void CreateNotificationChannel()
