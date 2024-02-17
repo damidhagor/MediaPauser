@@ -6,6 +6,8 @@ internal interface ITimerServiceAccessor
 
     void StopTimer();
 
+    void IncrementTimer(TimeSpan increment);
+
     void BindTimerService();
 
     void UnbindTimerService();

@@ -28,7 +28,7 @@ internal sealed class TimerServiceConnection(IMessenger messenger)
             var status = Service.GetTimerStatus();
             if (status.IsRunning)
             {
-                BroadcastTimerStarted(status.StartTime!.Value, status.Duration!.Value);
+                BroadcastTimerStarted(status.StartTime, status.Duration);
             }
         }
     }
@@ -47,9 +47,9 @@ internal sealed class TimerServiceConnection(IMessenger messenger)
         base.Dispose(disposing);
     }
 
-    private void OnTimerStarted(object? sender, TimerStartedEventArgs e) => BroadcastTimerStarted(e.StartTime, e.Duration);
+    private void OnTimerStarted(object? sender, TimerStartedEventArgs e) => BroadcastTimerStarted(e.TimerStatus.StartTime, e.TimerStatus.Duration);
 
-    private void OnTimerTicked(object? sender, TimerTickedEventArgs e) => BroadcastTimerTicked(e.StartTime, e.Duration, e.RemainingTime);
+    private void OnTimerTicked(object? sender, TimerTickedEventArgs e) => BroadcastTimerTicked(e.TimerStatus.StartTime, e.TimerStatus.Duration, e.TimerStatus.RemainingTime);
 
     private void OnTimerStopped(object? sender, EventArgs e) => BroadcastTimerStopped();
 

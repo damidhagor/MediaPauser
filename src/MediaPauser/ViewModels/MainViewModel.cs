@@ -10,6 +10,7 @@ internal sealed partial class MainViewModel : ObservableRecipient,
 {
     private readonly ISettingsService _settingsService;
     private readonly ITimerServiceAccessor _timerServiceAccessor;
+    private readonly TimeSpan _durationIncrement = TimeSpan.FromMinutes(5);
 
     [ObservableProperty]
     private TimeSpan _duration;
@@ -57,6 +58,9 @@ internal sealed partial class MainViewModel : ObservableRecipient,
     [RelayCommand]
     private void StopTimer() => _timerServiceAccessor.StopTimer();
 
+    [RelayCommand]
+    private void IncrementTimer() => _timerServiceAccessor.IncrementTimer(_durationIncrement);
+
     public void Receive(TimerStarted message)
     {
         _settingsService.StoreLastUsedTimerDuration(message.Duration);
@@ -68,11 +72,13 @@ internal sealed partial class MainViewModel : ObservableRecipient,
     public void Receive(TimerStopped message)
     {
         TimerIsRunning = false;
+        Duration = _settingsService.GetLastUsedTimerDuration();
         RemainingTime = TimeSpan.Zero;
     }
 
     public void Receive(TimerTicked message)
     {
+        Duration = message.Duration;
         RemainingTime = message.RemainingTime;
     }
 }

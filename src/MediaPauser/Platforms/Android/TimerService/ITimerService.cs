@@ -8,5 +8,7 @@ internal interface ITimerService
 
     event EventHandler TimerStopped;
 
+    void IncrementTimer(TimeSpan increment);
+
     TimerStatus GetTimerStatus();
 }

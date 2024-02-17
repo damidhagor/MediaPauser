@@ -25,6 +25,11 @@ internal sealed class TimerServiceAccessor(TimerServiceConnection serviceConnect
         _context.StartService(stopIntent);
     }
 
+    public void IncrementTimer(TimeSpan increment)
+    {
+        _serviceConnection.Service?.IncrementTimer(increment);
+    }
+
     public void BindTimerService()
     {
         var intent = new Intent(_context, typeof(TimerService.TimerService));

@@ -1,8 +1,6 @@
 ﻿namespace MediaPauser.Platforms.Android.TimerService;
 
-internal sealed class TimerStartedEventArgs(DateTimeOffset startTime, TimeSpan duration) : EventArgs
+internal sealed class TimerStartedEventArgs(TimerStatus status) : EventArgs
 {
-    public DateTimeOffset StartTime { get; } = startTime;
-
-    public TimeSpan Duration { get; } = duration;
+    public TimerStatus TimerStatus { get; } = status;
 }

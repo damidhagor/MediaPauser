@@ -7,5 +7,6 @@
     <x:String x:Key="FA-Chevron-Down">&#xF078;</x:String>
     <x:String x:Key="FA-Play">&#xF04B;</x:String>
     <x:String x:Key="FA-Stop">&#xF04D;</x:String>
+    <x:String x:Key="FA-Plus">&#x002B;</x:String>
     
 </ResourceDictionary>

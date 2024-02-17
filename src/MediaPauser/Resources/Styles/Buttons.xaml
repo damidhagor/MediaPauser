@@ -40,6 +40,11 @@
         <Setter Property="Text" Value="{x:Static resources:AppResources.StopTimer}" />
     </Style>
 
+    <Style x:Key="IncrementButton" TargetType="controls:FAButton" BasedOn="{StaticResource MainButton}">
+        <Setter Property="Glyph" Value="{StaticResource FA-Plus}" />
+        <Setter Property="Text" Value="{x:Static resources:AppResources.IncrementTimer}" />
+    </Style>
+
     <Style x:Key="StepperButton" TargetType="controls:FAButton" BasedOn="{StaticResource FAButtonBaseStyle}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="GlyphFontSize" Value="{StaticResource StepperButtonGlyphFontSize}" />

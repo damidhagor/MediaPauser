@@ -17,8 +17,8 @@ internal sealed class TimerService : Service, ITimerService
     private readonly Timer _timer;
     private NotificationManager? _notificationManager;
     private AudioManager? _audioManager;
-    private DateTimeOffset _timerStartTime;
-    private TimeSpan _timerDuration;
+
+    private TimerStatus _timerStatus = new(false, DateTimeOffset.MinValue, TimeSpan.Zero, TimeSpan.Zero);
 
     public event EventHandler<TimerStartedEventArgs> TimerStarted = null!;
     public event EventHandler<TimerTickedEventArgs> TimerTicked = null!;
@@ -31,7 +31,6 @@ internal sealed class TimerService : Service, ITimerService
         _binder = new(this);
         _timer = new(TimeSpan.FromSeconds(1));
         _timer.Elapsed += OnTimerElapsed;
-        _timerDuration = TimeSpan.Zero;
     }
 
     public override void OnCreate()
@@ -75,10 +74,7 @@ internal sealed class TimerService : Service, ITimerService
 
     public override IBinder? OnBind(Intent? intent) => _binder;
 
-    public TimerStatus GetTimerStatus() => new(
-            _timer.Enabled,
-            _timer.Enabled ? _timerStartTime : null,
-            _timer.Enabled ? _timerDuration : null);
+    public TimerStatus GetTimerStatus() => _timerStatus;
 
     private void StartTimer(TimeSpan duration)
     {
@@ -88,37 +84,44 @@ internal sealed class TimerService : Service, ITimerService
             return;
         }
 
-        _timerDuration = duration;
-        _timerStartTime = _timeProvider.GetUtcNow().TruncateMilliseconds();
+        _timerStatus = new(true, _timeProvider.GetUtcNow().TruncateMilliseconds(), duration, duration);
 
         StartForegroundService();
 
         _timer.Start();
-        TimerStarted?.Invoke(this, new(_timerStartTime, _timerDuration));
+        TimerStarted?.Invoke(this, new(_timerStatus));
     }
 
     private void StopTimer()
     {
         _timer.Stop();
+        _timerStatus = new(false, DateTimeOffset.MinValue, TimeSpan.Zero, TimeSpan.Zero);
         TimerStopped?.Invoke(this, new());
         StopForegroundService();
     }
 
+    public void IncrementTimer(TimeSpan increment)
+    {
+        var newDuration = _timerStatus.Duration + increment;
+        var remainingTime = CalculateRemainingTime(_timerStatus.StartTime, _timeProvider.GetUtcNow(), newDuration);
+        _timerStatus = _timerStatus with { Duration = newDuration, RemainingTime = remainingTime };
+        TimerTicked?.Invoke(this, new(_timerStatus));
+    }
+
     private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
     {
-        var signalTime = e.SignalTime.TruncateMilliseconds();
-        var elapsedTime = signalTime - _timerStartTime;
-        var remainingTime = _timerDuration - elapsedTime;
+        var remainingTime = CalculateRemainingTime(_timerStatus.StartTime, e.SignalTime, _timerStatus.Duration);
+        _timerStatus = _timerStatus with { RemainingTime = remainingTime };
 
         if (_notificationManager is not null)
         {
-            var notification = BuildNotification(remainingTime);
+            var notification = BuildNotification();
             _notificationManager.Notify(NotificationId, notification);
         }
 
         if (remainingTime > TimeSpan.Zero)
         {
-            TimerTicked?.Invoke(this, new(_timerStartTime, _timerDuration, remainingTime));
+            TimerTicked?.Invoke(this, new(_timerStatus));
         }
         else
         {
@@ -143,7 +146,7 @@ internal sealed class TimerService : Service, ITimerService
     {
         CreateNotificationChannel();
 
-        var notification = BuildNotification(_timerDuration);
+        var notification = BuildNotification();
 
         StartForeground(NotificationId, notification);
     }
@@ -154,21 +157,18 @@ internal sealed class TimerService : Service, ITimerService
         StopSelf();
     }
 
-    private Notification BuildNotification(TimeSpan remainingTime)
+    private Notification BuildNotification()
     {
         var showMainActivityIntent = BuildShowMainActivityIntent();
         var stopServiceAction = BuildStopServiceAction();
 
-        var title = _timer.Enabled ? NotificationTitle : "";
-        var text = _timer.Enabled
-            ? $"{(int)remainingTime.TotalHours:00}:{remainingTime.Minutes:00}:{remainingTime.Seconds:00}"
-            : "";
+        var text = $"{(int)_timerStatus.RemainingTime.TotalHours:00}:{_timerStatus.RemainingTime.Minutes:00}:{_timerStatus.RemainingTime.Seconds:00}";
 
         return new Notification.Builder(this, NotificationChannelId)
              .SetOngoing(true)
              .SetOnlyAlertOnce(true)
              .SetSmallIcon(Resource.Mipmap.appicon_foreground)
-             .SetContentTitle(title)
+             .SetContentTitle(NotificationTitle)
              .SetContentText(text)
              .AddAction(stopServiceAction)
              .SetContentIntent(showMainActivityIntent)
@@ -195,4 +195,12 @@ internal sealed class TimerService : Service, ITimerService
 
     private void CreateNotificationChannel()
         => _notificationManager?.CreateNotificationChannel(new(NotificationChannelId, NotificationChannelName, NotificationImportance.Low));
+
+    private static TimeSpan CalculateRemainingTime(DateTimeOffset startTime, DateTimeOffset currentTime, TimeSpan duration)
+    {
+        var truncatedStartTime = startTime.TruncateMilliseconds();
+        var truncatedCurrentTime = currentTime.TruncateMilliseconds();
+        var elapsedTime = truncatedCurrentTime - truncatedStartTime;
+        return duration - elapsedTime;
+    }
 }
