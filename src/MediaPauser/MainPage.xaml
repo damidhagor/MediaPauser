@@ -24,8 +24,7 @@
             <controls:TimeSelector Value="{Binding Duration}"/>
 
             <controls:FAButton Style="{StaticResource StartButton}"
-                               Command="{Binding StartTimerCommand}"
-                               HorizontalOptions="Center" />
+                               Command="{Binding StartTimerCommand}" />
 
         </VerticalStackLayout>
 
