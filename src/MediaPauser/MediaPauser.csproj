@@ -10,15 +10,12 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
-		<!-- Display name -->
 		<ApplicationTitle>MediaPauser</ApplicationTitle>
 
-		<!-- App Identifier -->
 		<ApplicationId>com.damidhagor.mediapauser</ApplicationId>
 
-		<!-- Versions -->
-		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationDisplayVersion>1.1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>2</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">29.0</SupportedOSPlatformVersion>
 
