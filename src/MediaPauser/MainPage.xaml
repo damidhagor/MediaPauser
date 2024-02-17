@@ -35,12 +35,10 @@
             <controls:TimerProgressBar Duration="{Binding Duration}"
                                        RemainingTime="{Binding RemainingTime}" />
 
-            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*"
-                  RowSpacing="20" ColumnSpacing="20"
-                  HorizontalOptions="Center" VerticalOptions="Center">
-                
-                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                       Text="{Binding RemainingTime}"
+            <VerticalStackLayout Spacing="20"
+                                 HorizontalOptions="Center" VerticalOptions="Center">
+
+                <Label Text="{Binding RemainingTime}"
                        Style="{StaticResource StepperLabelPrimary}"
                        HorizontalOptions="Center">
                     <Label.FormattedText>
@@ -54,16 +52,14 @@
                     </Label.FormattedText>
                 </Label>
 
-                <controls:FAButton Grid.Row="1" Grid.Column="0"
-                                   Style="{StaticResource StopButton}"
-                                   Command="{Binding StopTimerCommand}"
-                                   HorizontalOptions="Center" />
+                <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+                    <controls:FAButton Style="{StaticResource StopButton}"
+                                       Command="{Binding StopTimerCommand}" />
 
-                <controls:FAButton Grid.Row="1" Grid.Column="1"
-                                   Style="{StaticResource IncrementButton}"
-                                   Command="{Binding IncrementTimerCommand}"
-                                   HorizontalOptions="Center" />
-            </Grid>
+                    <controls:FAButton Style="{StaticResource IncrementButton}"
+                                       Command="{Binding IncrementTimerCommand}" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
         </Grid>
     </Grid>
 </ContentPage>
